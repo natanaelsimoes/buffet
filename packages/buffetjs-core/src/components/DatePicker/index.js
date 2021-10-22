@@ -41,12 +41,12 @@ function Datepicker({
 
     if (withDefaultValue && !value) {
       date = moment();
-      displayedDate = date.format('MM/DD/YYYY');
+      displayedDate = date.format(displayFormat);
     }
 
     if (!!value && moment(value).isValid()) {
       date = value._isAMomentObject === true ? value : moment(value);
-      displayedDate = date.format('MM/DD/YYYY');
+      displayedDate = date.format(displayFormat);
     }
 
     dispatch({
@@ -58,20 +58,12 @@ function Datepicker({
       type: 'SET_DISPLAYED_DATE',
       displayedDate,
     });
-  }, [value, withDefaultValue]);
+  }, [value, withDefaultValue, displayFormat]);
 
   let timer = null;
-  const { date, displayedDate, isFocused, isVisible } = state;
+  const { date, isFocused, isVisible } = state;
 
-  const getDateValue = () => {
-    let dateValue = date ? date.format(displayFormat) : '';
-
-    if (isVisible) {
-      dateValue = displayedDate;
-    }
-
-    return dateValue;
-  };
+  const getDateValue = () => (date ? date.format(displayFormat) : '');
 
   const handleChange = ({ target }) => {
     clearTimeout(timer);
@@ -104,7 +96,7 @@ function Datepicker({
         return;
       }
 
-      handleDateChange(moment(target.value, 'MM/DD/YYYY'));
+      handleDateChange(moment(target.value, displayFormat));
     }, wait);
   };
 
@@ -119,7 +111,7 @@ function Datepicker({
 
       dispatch({
         type: 'SET_DISPLAYED_DATE',
-        displayedDate: dateValue.format('MM/DD/YYYY'),
+        displayedDate: dateValue.format(displayFormat),
       });
     }
   };
